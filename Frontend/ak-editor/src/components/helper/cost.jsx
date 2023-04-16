@@ -1,9 +1,9 @@
 import React from "react";
 
-const Cost = () => {
+const Cost = (props) => {
     return(
         <div className="main__cost">
-            1000 руб.
+            {`${24280} руб.`}
         </div>
     )
 }
