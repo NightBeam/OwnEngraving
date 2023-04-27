@@ -9,25 +9,77 @@ import { OrbitControls, Html, useProgress } from "@react-three/drei";
 import { Vector3, AxesHelper } from "three";
 
 const Editor = () => {
-    var [attributes] = useState(() => [{
+    var [attributes, setAttributes] = useState(() => [{
         'name': 'Гравировка',
         z: 0.05,
-        properties: []
+        properties: [{
+            'name':'Надпись',
+            'cost':10000,
+            'isActive': false
+        },{
+            'name':'Инициалы',
+            'cost': 11000,
+            'isActive': false
+        },{
+            'name':'Логотип',
+            'cost': 10400,
+            'isActive': false
+        }]
     }, {
         'name': 'Резьба по дереву',
         z: 0.12,
-        properties: []
+        properties: [{
+            'name': 'Сквозная',
+            'cost': 1300,
+            'isActive': false
+        },{
+            'name': 'Глухая',
+            'cost': 1500,
+            'isActive': false
+        },{
+            'name': 'Скульптурная',
+            'cost': 1200,
+            'isActive': false
+        }]
     }, {
         'name': 'Обвесы',
         z: -0.08,
-        properties: []
+        properties: [{
+            'name': 'Прицел',
+            'cost': 1200,
+            'isActive': false
+        },{
+            'name': 'text',
+            'cost': 1300,
+            'isActive': false
+        },{
+            'name': 'text1',
+            'cost': 1400,
+            'isActive': false
+        }]
     }])
 
     var modelRef = useRef();
     var controllerRef = useRef();
+    const [isActive, setIsActive] = useState(false);
+    let [attributesTitle, setAttributesTitle] = useState('')
+    const [cost, setCost] = useState([
+        {
+            'name': 'Гравировка',
+            'cost': 0,
+        },
+        {
+            'name': 'Резьба по дереву',
+            'cost': 0,
+        },
+        {
+            'name': 'Обвесы',
+            'cost': 0,
+        }
+    ])
 
-    const ToPoint = (z) => {
-        controllerRef.current.target = new Vector3(0, 0, z);
+    const ToPoint = (z, getTitle) => {
+        /*controllerRef.current.target = new Vector3(0, 0, z);
         controllerRef.current.maxDistance = 0.05;
         controllerRef.current.zoomSpeed = 1;
         console.log(controllerRef.current);
@@ -37,7 +89,43 @@ const Editor = () => {
                 console.log(i.position);
                 console.log(i.name);
             }
-        }
+        }*/
+        setIsActive(true);
+        setAttributesTitle(getTitle)
+    }
+
+    const closeOptions = () => {
+        setIsActive(false);
+    }
+
+    const getActive = (attributestitle, title, cost1) =>{
+        setAttributes(attributes.map(i=>{
+            if(i.name===attributestitle){
+                i.properties = i.properties.map(item=>{
+                    if (item.name === title){
+                        if(item.isActive===true){
+                            return {...item, isActive: false}
+                        }
+                        else{
+                            return {...item, isActive: true}
+                        }
+                    }
+                    else{
+                        return {...item, isActive: false}
+                    }
+                })
+                for(let item of i.properties){
+                    if(item.isActive===true){
+                        setCost(cost.map(i=>i.name === attributestitle ? {...i, cost: item.cost}: i))
+                        break
+                    }
+                    else{
+                        setCost(cost.map(i=>i.name === attributestitle ? {...i,cost: 0} : i))
+                    }
+                }
+            }
+            return i
+        }))
     }
 
     return (
@@ -48,7 +136,7 @@ const Editor = () => {
                     near: 0.001,
                     position: [0.2, 0, 0],
                 }}>
-                <Suspense fallback={<Loader />}>
+                {<Suspense fallback={<Loader />}>
                     <primitive object={new AxesHelper(0.5)} />
                     <Model ref={modelRef} />
                     <ambientLight intensity={1} />
@@ -60,10 +148,22 @@ const Editor = () => {
                         zoomSpeed={4}
                         ref={controllerRef}
                         target={new Vector3(0, 0, 0)} />
-                </Suspense>
+            </Suspense>}
             </Canvas>
-            <Cost />
-            <Attributes titles={attributes} method={ToPoint} />
+            <Cost cost={cost}/>
+            <Attributes 
+                titles={attributes} 
+                method={ToPoint} 
+                active={isActive} 
+                options={attributes.filter(i=>{
+                    if(i.name === attributesTitle){
+                        return i.properties
+                    }
+                })}
+                closeOptions={closeOptions}
+                getActive={getActive}
+                cost={cost}
+            />
         </>
     )
 }

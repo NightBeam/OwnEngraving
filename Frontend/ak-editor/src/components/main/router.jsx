@@ -7,7 +7,7 @@ import Editor from "./editor";
 const router = () => {
     return (
         <Routes>
-            <Route path="/" element={<Layout />}>
+            <Route path="/" element={<Editor />}>
                 <Route path=":item" element={<Editor />} />
             </Route>
         </Routes>

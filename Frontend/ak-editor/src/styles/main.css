@@ -102,3 +102,61 @@
     min-width: 200px;
     max-width: 1000px;
 }
+
+.main__option{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    color: black;
+    font-weight: 400;
+    font-size: 1.5rem;
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 5px;
+    transition: .3s all ease-in-out;
+}
+
+.main__option:hover{
+    color: #EF0009;
+    border-radius: 15px;
+    border-color: #EF0009;
+}
+
+.active{
+    color: #EF0009;
+    border-radius: 15px;
+    border-color: #EF0009;
+}
+
+.cancel__button{
+    display: block;
+    position: relative;
+    top:0;
+    right: 0;
+    width: 30px;
+    height: 20px;
+}
+
+.cancel__button span::before{
+    position: absolute;
+    top:9px;
+    display: block;
+    content: '';
+    width: 100%;
+    height: 2px;
+    background-color: #000000;
+    transform: rotate(45deg);
+}
+
+.cancel__button span::after{
+    position: absolute;
+    bottom:9px;
+    display: block;
+    content: '';
+    width: 100%;
+    height: 2px;
+    background-color: #000000;
+    transform: rotate(-45deg);
+}
